@@ -4,7 +4,7 @@ const parseInput = (rawInput) => rawInput;
 
 function line2SymObject(line) {
   let res = [];
-  let re = /[^\d\.]/g;
+  let re = /[^\d.]/g;
   let match;
   while ((match = re.exec(line)) != null) {
     res.push(match.index)
@@ -44,8 +44,8 @@ const part1 = (rawInput) => {
   return lines.map((line,lineNumber)=>checkLine(line,lineNumber,symbols)).reduce((a,b)=>a+b)
 };
 
-const part2 = (rawInput) => {
-  const input = parseInput(rawInput);
+const part2 = () => {
+  //const input = parseInput(rawInput);
 
   return;
 };

@@ -42,8 +42,6 @@ const part2 = (rawInput) => {
   let v = u.map(d => d.reduce(sum))
   let w = v.reduce(sum)
   return w;
-
-  return;
 };
 
 run({

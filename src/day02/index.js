@@ -6,8 +6,8 @@ function checkGameString(str){
 	
   let re = /(Game \d+:)(.*)/gm;
   let matches = str.matchAll(re);
-  let a, gameId,game;
-  [a,gameId,game] = matches.next().value;
+  let gameId,game;
+  [,gameId,game] = matches.next().value;
   let gameNumber = parseInt(gameId.match(/\d+/));
   
   return checkGame(game) ? gameNumber : 0;
