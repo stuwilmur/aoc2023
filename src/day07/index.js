@@ -20,13 +20,13 @@ function compareHands(a, b) {
   }
 }
 
-function tiebreakHands(a, b) {
+function tiebreakHands(a, b, joker = false) {
   let res = 0;
   a.every((e, i) => {
-    if (value(e) > value(b[i])) {
+    if (value(e, joker) > value(b[i], joker)) {
       res = 1;
       return false;
-    } else if (value(e) < value(b[i])) {
+    } else if (value(e, joker) < value(b[i], joker)) {
       res = -1;
       return false;
     }
@@ -35,15 +35,16 @@ function tiebreakHands(a, b) {
   return res;
 }
 
-function value(char) {
+function value(char, joker = false) {
   if (isNaN(parseInt(char))) {
-    return values[char];
+    return joker ? jokerValues[char] : values[char];
   } else {
     return parseInt(char);
   }
 }
 
 const values = { A: 14, K: 13, Q: 12, J: 11, T: 10 };
+const jokerValues = { A: 14, K: 13, Q: 12, J: 1, T: 10 };
 
 function type(hand) {
   const s = new Set(hand);
@@ -78,6 +79,31 @@ function type(hand) {
   }
 }
 
+function bestType(hand) {
+  if (hand.includes("J")) {
+    const alts = "23456789TQKA".split("");
+    let handString = hand.join("");
+    return alts
+      .map((alt) => {
+        let replacedHand = handString.replace(/J/g, alt).split("");
+        return type(replacedHand);
+      })
+      .reduce((a, b) => Math.max(a, b));
+  } else {
+    return type(hand);
+  }
+}
+
+function compareHandsJ(a, b) {
+  if (bestType(a) > bestType(b)) {
+    return 1;
+  } else if (bestType(a) < bestType(b)) {
+    return -1;
+  } else {
+    return tiebreakHands(a, b, true);
+  }
+}
+
 const part1 = (rawInput) => {
   const input = parseInput(rawInput);
   const sorted = input.sort((a, b) => compareHands(a.hand, b.hand));
@@ -88,7 +114,10 @@ const part1 = (rawInput) => {
 
 const part2 = (rawInput) => {
   const input = parseInput(rawInput);
-  return;
+  const sorted = input.sort((a, b) => compareHandsJ(a.hand, b.hand));
+  const points = sorted.map((x, i) => x.bid * (i + 1));
+  const res = points.reduce((a, b) => a + b);
+  return res;
 };
 
 run({
@@ -108,10 +137,15 @@ QQQJA 483`,
   },
   part2: {
     tests: [
-      // {
-      //   input: ``,
-      //   expected: "",
-      // },
+      {
+        input: `
+32T3K 765
+T55J5 684
+KK677 28
+KTJJT 220
+QQQJA 483`,
+        expected: 5905,
+      },
     ],
     solution: part2,
   },
