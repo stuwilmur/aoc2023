@@ -13,12 +13,11 @@ const parseInput = (rawInput) => {
   return { directions: directions, L: leftMap, R: rightMap };
 };
 
-function navigate(map) {
+function navigate(map, node, isEnd) {
   let directionIndex = 0;
   let steps = 0;
-  let node = "AAA";
-  while (node != "ZZZ") {
-    node = map[map.directions[directionIndex]].get(node);
+  while (!isEnd(node)) {
+    node = next(node, map, directionIndex);
     directionIndex += 1;
     steps += 1;
     directionIndex %= map.directions.length;
@@ -26,14 +25,27 @@ function navigate(map) {
   return steps;
 }
 
-const part1 = (rawInput) => {
-  return navigate(parseInput(rawInput));
+const endFn1 = (e) => e == "ZZZ";
+
+const next = (node, map, directionIndex) => {
+  return map[map.directions[directionIndex]].get(node);
 };
 
-const part2 = (rawInput) => {
-  const input = parseInput(rawInput);
+const part1 = (rawInput) => {
+  return navigate(parseInput(rawInput), "AAA", endFn1);
+};
 
-  return;
+const endFn2 = (e) => e.slice(-1)[0] == "Z";
+
+const part2 = (rawInput) => {
+  const map = parseInput(rawInput);
+  const startingNodes = [...map.L.keys()].filter(
+    (node) => node.slice(-1)[0] == "A",
+  );
+  const steps = startingNodes.map((node) => navigate(map, node, endFn2));
+  const gcd = (a, b) => (a ? gcd(b % a, a) : b);
+  const lcm = (a, b) => (a * b) / gcd(a, b);
+  return steps.reduce(lcm);
 };
 
 run({
@@ -65,10 +77,19 @@ ZZZ = (ZZZ, ZZZ)`,
   },
   part2: {
     tests: [
-      // {
-      //   input: ``,
-      //   expected: "",
-      // },
+      {
+        input: `LR
+
+AAA = (AAB, XXX)
+AAB = (XXX, AAZ)
+AAZ = (AAB, XXX)
+BBA = (BBB, XXX)
+BBB = (BBC, BBC)
+BBC = (BBZ, BBZ)
+BBZ = (BBB, BBB)
+XXX = (XXX, XXX)`,
+        expected: 6,
+      },
     ],
     solution: part2,
   },
