@@ -1,103 +1,109 @@
 import run from "aocrunner";
-import { count } from "console";
+import { count, group } from "console";
 
 Array.prototype.sum = function sum() {
   return this.reduce((a, b) => a + b);
 };
 
-Array.prototype.countTrue = function countTrue() {
-  return this.filter((x) => x == true).length;
-};
-
-const unfold = (str, char) => (str + char).repeat(4) + str;
+const unfoldStr = (str, char) => (str + char).repeat(4) + str;
 
 const parseRecord = (line) => line.match(/[#\?\.]+/)[0];
 
-const parseGroups = (line) => {
+const parseGroups = (line, unfold = false) => {
   let groupStr = line.match(/[\d,]+/)[0];
+  if (unfold) {
+    groupStr = unfoldStr(groupStr, ",");
+  }
   return groupStr.split(",").map((d) => parseInt(d));
 };
 
-const parseInput = (rawInput) => {
+const parseInput = (rawInput, unfold = false) => {
   return rawInput.split("\n").map((line) => {
     return {
-      record: parseRecord(line),
-      groups: parseGroups(line),
+      record: unfold ? unfoldStr(parseRecord(line), "?") : parseRecord(line),
+      groups: parseGroups(line, unfold),
     };
   });
 };
 
-function pigeonHole(pigeons, holes, first = false) {
-  let minPigeons = first ? 0 : 1;
-  let maxPigeons = pigeons - holes + 2;
-  if (holes == 1) {
-    return [[pigeons]];
-  }
-  let list = [];
-  for (
-    let pigeonsThisHole = minPigeons;
-    pigeonsThisHole <= maxPigeons;
-    pigeonsThisHole++
-  ) {
-    let arrangements = pigeonHole(pigeons - pigeonsThisHole, holes - 1);
-    arrangements.forEach((arrangement) => {
-      arrangement.unshift(pigeonsThisHole);
-    });
-    list = list.concat(arrangements);
-  }
-  return list;
+function getLut(str, groupIndex, lut) {
+  return lut.get(str + groupIndex.toFixed());
 }
+const setLut = (str, groupIndex, lut, value) => {
+  lut.set(str + groupIndex.toFixed());
+};
 
-const sum = (arr) => arr.reduce((a, b) => a + b);
+function solve(groups, record, groupIndex, lut) {
+  //console.log("@@", groupIndex);
 
-const listGapArrangements = (recordString, groups) =>
-  pigeonHole(recordString.length - sum(groups), groups.length + 1, true);
+  let cached = getLut(record, groupIndex, lut);
+  if (cached != undefined) {
+    return cached;
+  }
 
-const validGaps = (str) => str.match(/#/) == null;
-const validSprings = (str) => str.match(/\./) == null;
+  let startIndex = 0;
+  let sum = 0;
 
-function validArrangement(record, springs, gaps) {
-  let index = 0;
-  let valid = true;
-  gaps.every((gap, i) => {
-    let substring = record.slice(index, index + gap);
-    if (!validGaps(substring)) {
-      valid = false;
-      return false;
-    }
-    index += gap;
-    if (i < springs.length) {
-      let spring = springs[i];
-      substring = record.slice(index, index + spring);
-      if (!validSprings(substring)) {
+  while (startIndex + groups[groupIndex] <= record.length) {
+    let valid = true;
+    for (let i = 0; i < startIndex; i++) {
+      //console.log(startIndex, i);
+      if (record[i] == "#") {
         valid = false;
-        return false;
+        break;
       }
-      index += spring;
     }
-    return true;
-  });
-  return valid;
-}
+    for (let i = startIndex; i < startIndex + groups[groupIndex]; i++) {
+      //console.log("a", startIndex, i);
+      if (record[i] == ".") {
+        valid = false;
+        break;
+      }
+    }
+    if (groupIndex == groups.length - 1) {
+      if (record.slice(startIndex + groups[groupIndex]).includes(".")) {
+        valid = false;
+      }
+    }
+    if (record[startIndex + groups[groupIndex]] == "#") {
+      //console.log("b", startIndex);
+      valid = false;
+    }
 
-function countArrangements(l) {
-  let numGaps = l.length - l.groups.sum();
-  let gapArrangements = listGapArrangements(l.record, l.groups);
-  let validationList = gapArrangements.map((arrangement) =>
-    validArrangement(l.record, l.groups, arrangement),
-  );
-  return validationList.countTrue();
+    if (valid) {
+      //console.log(valid, startIndex, groupIndex);
+      sum +=
+        groupIndex == groups.length - 1
+          ? 1
+          : solve(
+              groups,
+              record.slice(startIndex + groups[groupIndex] + 1),
+              groupIndex + 1,
+              lut,
+            );
+    }
+    startIndex += 1;
+  }
+
+  setLut(record, groupIndex, lut, sum);
+
+  return sum;
 }
 
 const part1 = (rawInput) => {
   const input = parseInput(rawInput);
-  return input.map((x) => countArrangements(x)).sum();
+  return input.map((x) => solve(x.groups, x.record, 0, new Map())).sum();
 };
 
 const part2 = (rawInput) => {
-  const input = parseInput(rawInput);
-
+  const input = parseInput(rawInput, true);
   return;
+  return input
+    .map((x, i) => {
+      console.log(i);
+      return solve(x.groups, x.record, 0, new Map());
+    })
+    .sum();
 };
 
 run({
@@ -112,15 +118,36 @@ run({
 ?###???????? 3,2,1`,
         expected: 21,
       },
+      {
+        input: "?##?##??#? 7,1",
+        expected: 1,
+      },
+      {
+        input: "???????.??? 1,3",
+        expected: 7,
+      },
+      {
+        input: "?#..##?##??###??#? 2,13",
+        expected: 1,
+      },
     ],
     solution: part1,
   },
   part2: {
     tests: [
-      // {
-      //   input: ``,
-      //   expected: "",
-      // },
+      {
+        input: `???.### 1,1,3
+.??..??...?##. 1,1,3
+?#?#?#?#?#?#?#? 1,3,1,6
+????.#...#... 4,1,1
+????.######..#####. 1,6,5
+?###???????? 3,2,1`,
+        expected: 525152,
+      },
+      {
+        input: "?##?##??#? 7,1",
+        expected: null,
+      },
     ],
     solution: part2,
   },
