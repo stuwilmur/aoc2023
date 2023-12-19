@@ -62,6 +62,7 @@ const part1 = (rawInput) => {
 
 function load(tilted) {
   let loads = tilted
+    .slice()
     .reverse()
     .map((line, lineIndex) => calculateLoad(line, lineIndex + 1));
   return loads.reduce((a, b) => a + b);
@@ -69,10 +70,11 @@ function load(tilted) {
 
 const part2 = (rawInput) => {
   let n = parseInput(rawInput);
-  for (let i = 1; i < 10000; i++) {
+  let res = [];
+  for (let i = 1; i < 1000; i++) {
     n = cycle(n);
+    console.log(load(n));
   }
-  return load(n);
 };
 
 run({
@@ -113,5 +115,5 @@ O.#..O.#.#
     solution: part2,
   },
   trimTestInputs: true,
-  onlyTests: true,
+  onlyTests: false,
 });
