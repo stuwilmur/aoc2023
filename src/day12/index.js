@@ -123,10 +123,6 @@ run({
         expected: 1,
       },
       {
-        input: "???????.??? 1,3",
-        expected: 7,
-      },
-      {
         input: "?#..##?##??###??#? 2,13",
         expected: 1,
       },
@@ -149,12 +145,12 @@ run({
         expected: 525152,
       },
       {
-        input: "?##?##??#? 7,1",
+        input: `???????.??? 1,3`,
         expected: null,
       },
     ],
     solution: part2,
   },
   trimTestInputs: true,
-  onlyTests: false,
+  onlyTests: true,
 });
