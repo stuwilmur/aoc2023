@@ -1,5 +1,7 @@
 import run from "aocrunner";
 
+const sum = (arr) => (arr.length > 0 ? arr.reduce((a, b) => a + b) : 0);
+
 function transpose(arr) {
   let result = new Array(arr[0].length).fill("");
   arr.forEach((line) => {
@@ -47,49 +49,29 @@ function countReflections(list) {
   return reflections;
 }
 
-const parseInput = (rawInput) => rawInput.split("\n");
+const parseInput = (rawInput) => rawInput.split(/\n\n/);
 
-const part1 = (rawInput) => {
-  const input = parseInput(rawInput);
-  let hashedRows = input.map((x) => x.hashCode());
-  let hashedColumns = transpose(input).map((x) => x.hashCode());
-  const rowReflections = countReflections(hashedRows);
-  const colReflections = countReflections(hashedColumns);
+const part1 = (rawInputs) => {
+  const inputs = parseInput(rawInputs);
+  let total = 0;
+  inputs.forEach((rawInput) => {
+    let input = rawInput.split("\n");
+    let hashedRows = input.map((x) => x.hashCode());
+    let hashedColumns = transpose(input).map((x) => x.hashCode());
+    const rowReflections = countReflections(hashedRows);
+    const colReflections = countReflections(hashedColumns);
+    total += sum(rowReflections) * 100 + sum(colReflections);
+  });
+  return total;
 };
 
 const part2 = (rawInput) => {
   const input = parseInput(rawInput);
-
   return;
 };
 
 run({
   part1: {
-    tests: [
-      {
-        input: `#...##..#
-#....#..#
-..##..###
-#####.##.
-#####.##.
-..##..###
-#....#..#`,
-        expected: "",
-      },
-      {
-        input: `#.##..##.
-..#.##.#.
-##......#
-##......#
-..#.##.#.
-..##..##.
-#.#.##.#.`,
-        expected: "",
-      },
-    ],
-    solution: part1,
-  },
-  part2: {
     tests: [
       {
         input: `#.##..##.
@@ -107,8 +89,17 @@ run({
 #####.##.
 ..##..###
 #....#..#`,
-        expected: "",
+        expected: 405,
       },
+    ],
+    solution: part1,
+  },
+  part2: {
+    tests: [
+      //{
+      //  input: ``,
+      //  expected: "",
+      //},
     ],
     solution: part2,
   },
