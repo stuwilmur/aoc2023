@@ -12,20 +12,42 @@ function transpose(arr) {
   return result;
 }
 
-function sortRocks(subline) {
-  return subline.split("").sort().reverse().join("");
+function sortRocks(subline, reverse = false) {
+  if (reverse) {
+    return subline.split("").slice().sort().slice().reverse().join("");
+  }
+  return subline.split("").sort().join("");
 }
 
-function rollRocks(line) {
-  let x = line.split("#").map(sortRocks).join("#");
+function rollRocks(line, reverse = false) {
+  let x = line
+    .split("#")
+    .map((subline) => sortRocks(subline, reverse))
+    .join("#");
   return x;
 }
 
-function tilt(lines) {
-  let x = transpose(lines).map(rollRocks);
+function tiltN(lines) {
+  let x = transpose(lines).map((line) => rollRocks(line, true));
   let y = transpose(x);
   return y;
 }
+
+function tiltS(lines) {
+  let x = transpose(lines).map((line) => rollRocks(line, false));
+  let y = transpose(x);
+  return y;
+}
+
+function tiltE(lines) {
+  return lines.map((line) => rollRocks(line, false));
+}
+
+function tiltW(lines) {
+  return lines.map((line) => rollRocks(line, true));
+}
+
+const cycle = (lines) => tiltE(tiltS(tiltW(tiltN(lines))));
 
 function calculateLoad(line, lineNumber) {
   const matches = line.match(/O/gi);
@@ -34,17 +56,23 @@ function calculateLoad(line, lineNumber) {
 
 const part1 = (rawInput) => {
   const input = parseInput(rawInput);
-  const tilted = tilt(input);
-  const loads = tilted
+  const tilted = tiltN(input);
+  return load(tilted);
+};
+
+function load(tilted) {
+  let loads = tilted
     .reverse()
     .map((line, lineIndex) => calculateLoad(line, lineIndex + 1));
   return loads.reduce((a, b) => a + b);
-};
+}
 
 const part2 = (rawInput) => {
-  const input = parseInput(rawInput);
-
-  return;
+  let n = parseInput(rawInput);
+  for (let i = 1; i < 10000; i++) {
+    n = cycle(n);
+  }
+  return load(n);
 };
 
 run({
@@ -68,13 +96,22 @@ O.#..O.#.#
   },
   part2: {
     tests: [
-      // {
-      //   input: ``,
-      //   expected: "",
-      // },
+      {
+        input: `O....#....
+O.OO#....#
+.....##...
+OO.#O....O
+.O.....O#.
+O.#..O.#.#
+..O..#O..O
+.......O..
+#....###..
+#OO..#....`,
+        expected: 64,
+      },
     ],
     solution: part2,
   },
   trimTestInputs: true,
-  onlyTests: false,
+  onlyTests: true,
 });
