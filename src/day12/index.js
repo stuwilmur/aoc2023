@@ -61,7 +61,7 @@ function solve(groups, record, groupIndex, lut) {
       }
     }
     if (groupIndex == groups.length - 1) {
-      if (record.slice(startIndex + groups[groupIndex]).includes(".")) {
+      if (record.slice(startIndex + groups[groupIndex]).includes("#")) {
         valid = false;
       }
     }
@@ -92,12 +92,12 @@ function solve(groups, record, groupIndex, lut) {
 
 const part1 = (rawInput) => {
   const input = parseInput(rawInput);
+  console.log(input.map((x) => solve(x.groups, x.record, 0, new Map())));
   return input.map((x) => solve(x.groups, x.record, 0, new Map())).sum();
 };
 
 const part2 = (rawInput) => {
   const input = parseInput(rawInput, true);
-  return;
   return input
     .map((x, i) => {
       console.log(i);
@@ -129,6 +129,10 @@ run({
       {
         input: "?#..##?##??###??#? 2,13",
         expected: 1,
+      },
+      {
+        input: "??????#???. 1,7",
+        expected: 3,
       },
     ],
     solution: part1,
