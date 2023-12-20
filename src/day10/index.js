@@ -3,6 +3,26 @@ import { start } from "repl";
 
 const parseInput = (rawInput) => rawInput.split("\n");
 
+function Position(character, direction, x, y, steps) {
+  this.character = character;
+  this.direction = direction;
+  this.x = x;
+  this.y = y;
+  this.steps = steps;
+  this.toStr = () => `${this.x},${this.y}`;
+}
+
+function getPipes(rawInput) {
+  const map = parseInput(rawInput);
+  let pipes = new Map();
+  let position = getStartPosition(map);
+  do {
+    position = getNextPosition(position, map);
+    pipes.set(position.toStr(), true);
+  } while (position.character != "S");
+  return pipes;
+}
+
 const part1 = (rawInput) => {
   const map = parseInput(rawInput);
   let position = getStartPosition(map);
@@ -13,16 +33,6 @@ const part1 = (rawInput) => {
   return Math.floor(position.steps / 2);
 };
 
-function Position(character, direction, x, y, steps) {
-  return {
-    character: character,
-    direction: direction,
-    x: x,
-    y: y,
-    steps: steps,
-  };
-}
-
 const startConnectors = {
   u: ["7", "|", "F"],
   d: ["J", "|", "L"],
@@ -30,7 +40,7 @@ const startConnectors = {
   r: ["J", "-", "7"],
 };
 
-function getStartPosition(map) {
+function getStartPosition(map, replace = false) {
   let x, y;
   map.every((line, xIndex) => {
     y = line.search("S");
@@ -41,30 +51,58 @@ function getStartPosition(map) {
     return false;
   });
 
+  let position;
+  let [up, down, left, right] = [false, false, false, false];
+
   if (x > 0) {
     const character = map[x - 1][y];
     if (startConnectors["u"].includes(character)) {
-      return Position(character, "u", x - 1, y, 1);
+      position = new Position(character, "u", x - 1, y, 1);
+      up = true;
     }
   }
   if (x < map.length - 1) {
     const character = map[x + 1][y];
     if (startConnectors["d"].includes(character)) {
-      return Position(character, "d", x + 1, y, 1);
+      position = new Position(character, "d", x + 1, y, 1);
+      down = true;
     }
   }
   if (y > 0) {
     const character = map[x][y - 1];
     if (startConnectors["l"].includes(character)) {
-      return Position(character, "l", x, y - 1, 1);
+      position = new Position(character, "l", x, y - 1, 1);
+      left = true;
     }
   }
   if (y < map[0].length - 1) {
     const character = map[x][y + 1];
     if (startConnectors["r"].includes(character)) {
-      return Position(character, "r", x, y + 1, 1);
+      position = new Position(character, "r", x, y + 1, 1);
+      right = true;
     }
   }
+  if (replace) {
+    if (up && down) {
+      return new Position("|", "u", x, y, 0);
+    }
+    if (left && right) {
+      return new Position("-", "r", x, y, 0);
+    }
+    if (up && left) {
+      return new Position("J", "l", x, y, 0);
+    }
+    if (up && right) {
+      return new Position("L", "r", x, y, 0);
+    }
+    if (down && left) {
+      return new Position("7", "l", x, y, 0);
+    }
+    if (down && right) {
+      return new Position("F", "r", x, y, 0);
+    }
+  }
+  return position;
 }
 
 function getNextPosition(position, map) {
@@ -73,7 +111,7 @@ function getNextPosition(position, map) {
   const y_ = stepY(position.y, direction_);
   const character_ = getNextCharacter(x_, y_, map);
   const steps_ = position.steps + 1;
-  return Position(character_, direction_, x_, y_, steps_);
+  return new Position(character_, direction_, x_, y_, steps_);
 }
 
 function turn(character, direction) {
@@ -102,9 +140,12 @@ function getNextCharacter(x, y, map) {
   return map[x][y];
 }
 
+function countTilesInRow(rowIndex, map, pipes, startPosition) {}
+
 const part2 = (rawInput) => {
   const input = parseInput(rawInput);
-
+  const pipes = getPipes(rawInput);
+  const startPosition = getStartPosition(input, true);
   return;
 };
 
@@ -132,13 +173,17 @@ LJ...`,
   },
   part2: {
     tests: [
-      // {
-      //   input: ``,
-      //   expected: "",
-      // },
+      {
+        input: `.....
+.S-7.
+.|.|.
+.L-J.
+.....`,
+        expected: 1,
+      },
     ],
     solution: part2,
   },
   trimTestInputs: true,
-  onlyTests: false,
+  onlyTests: true,
 });
