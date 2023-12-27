@@ -16,6 +16,7 @@ function getPipes(rawInput) {
   const map = parseInput(rawInput);
   let pipes = new Map();
   let position = getStartPosition(map);
+  pipes.set(position.toStr(), true);
   do {
     position = getNextPosition(position, map);
     pipes.set(position.toStr(), true);
@@ -140,13 +141,44 @@ function getNextCharacter(x, y, map) {
   return map[x][y];
 }
 
-function countTilesInRow(rowIndex, map, pipes, startPosition) {}
+function countTilesInRow(rowIndex, map, pipes) {
+  let inside = false;
+  let count = 0;
+  let prev = null;
+  for (let charIndex in map[rowIndex]) {
+    let char = map[rowIndex][charIndex];
+    if (pipes.has(`${rowIndex},${charIndex}`)) {
+      if (char == "|") {
+        inside = !inside;
+      } else if ((char == "J" && prev == "F") || (char == "7" && prev == "L")) {
+        inside = !inside;
+      }
+      if (char == "F" || char == "L") {
+        prev = char;
+      }
+    } else {
+      if (inside) {
+        count++;
+      }
+    }
+  }
+  return count;
+}
 
 const part2 = (rawInput) => {
-  const input = parseInput(rawInput);
+  const map = parseInput(rawInput);
   const pipes = getPipes(rawInput);
-  const startPosition = getStartPosition(input, true);
-  return;
+  const startPosition = getStartPosition(map, true);
+  const oldLine = map[startPosition.x];
+  const newLine =
+    oldLine.slice(0, startPosition.y) +
+    startPosition.character +
+    oldLine.slice(startPosition.y + 1);
+  map[startPosition.x] = newLine;
+  const counts = map.map((row, rowIndex) =>
+    countTilesInRow(rowIndex, map, pipes),
+  );
+  return counts.reduce((a, b) => a + b);
 };
 
 run({
@@ -181,9 +213,34 @@ LJ...`,
 .....`,
         expected: 1,
       },
+      {
+        input: `...........
+.S-------7.
+.|F-----7|.
+.||.....||.
+.||.....||.
+.|L-7.F-J|.
+.|..|.|..|.
+.L--J.L--J.
+...........`,
+        expected: 4,
+      },
+      {
+        input: `.F----7F7F7F7F-7....
+.|F--7||||||||FJ....
+.||.FJ||||||||L7....
+FJL7L7LJLJ||LJ.L-7..
+L--J.L7...LJS7F-7L7.
+....F-J..F7FJ|L7L7L7
+....L7.F7||L7|.L7L7|
+.....|FJLJ|FJ|F7|.LJ
+....FJL-7.||.||||...
+....L---J.LJ.LJLJ...`,
+        expected: 8,
+      },
     ],
     solution: part2,
   },
   trimTestInputs: true,
-  onlyTests: true,
+  onlyTests: false,
 });
