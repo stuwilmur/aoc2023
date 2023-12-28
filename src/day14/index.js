@@ -73,8 +73,23 @@ const part2 = (rawInput) => {
   let res = [];
   for (let i = 1; i < 1000; i++) {
     n = cycle(n);
-    console.log(load(n));
+    res.push(load(n));
   }
+  let period;
+  for (let i = 1; i < 99; i++) {
+    if (
+      res[900] == res[900 + i] &&
+      res[901] == res[901 + i] &&
+      res[902] == res[902 + i]
+    ) {
+      period = i;
+      break;
+    }
+  }
+  console.log(period);
+  console.log(res.slice(900));
+  console.log((1000000000 + 100) % period);
+  return res[900 + ((1000000000 + 100) % period)];
 };
 
 run({
@@ -115,5 +130,5 @@ O.#..O.#.#
     solution: part2,
   },
   trimTestInputs: true,
-  onlyTests: false,
+  onlyTests: true,
 });
