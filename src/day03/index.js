@@ -17,7 +17,6 @@ function checkLine(line, lineNumber, symbols) {
   let re = /\d+/g;
   let match;
   while ((match = re.exec(line)) != null) {
-    //console.log("match " + match + " length " + match[0].length + " found at " + match.index);
     if (
       isSymbol(
         lineNumber - 1,
@@ -46,7 +45,6 @@ function checkLine(line, lineNumber, symbols) {
 }
 
 function isSymbol(lineNumber, startIndex, endIndex, symbols) {
-  //console.log(lineNumber,startIndex,endIndex)
   if (lineNumber < 0 || lineNumber >= symbols.length) {
     return false;
   }
@@ -130,7 +128,6 @@ function checkGearLine(line, lineNumber, gears, gearMap) {
 }
 
 function addGearsToMap(partNumber, lineNumber, gearPositions, gearMap) {
-  //console.log(partNumber, lineNumber, gearPositions)
   if (!gearMap.has(lineNumber)) {
     gearMap.set(lineNumber, new Map());
   }

@@ -38,8 +38,6 @@ const part2 = (rawInput) => {
   cardNumbers.forEach((cardNumber) => {
     table = processCard(cardNumber, table);
   });
-  //console.log(table);
-  //console.log(countCopies(table));
   return countCopies(table);
 };
 
