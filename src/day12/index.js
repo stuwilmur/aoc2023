@@ -33,8 +33,6 @@ const setLut = (str, groupIndex, lut, sum) => {
 };
 
 function solve(groups, record, groupIndex, lut) {
-  //console.log("@@", groupIndex);
-
   let cached = getLut(record, groupIndex, lut);
   if (cached != undefined) {
     return cached;
@@ -46,14 +44,12 @@ function solve(groups, record, groupIndex, lut) {
   while (startIndex + groups[groupIndex] <= record.length) {
     let valid = true;
     for (let i = 0; i < startIndex; i++) {
-      //console.log(startIndex, i);
       if (record[i] == "#") {
         valid = false;
         break;
       }
     }
     for (let i = startIndex; i < startIndex + groups[groupIndex]; i++) {
-      //console.log("a", startIndex, i);
       if (record[i] == ".") {
         valid = false;
         break;
@@ -65,12 +61,10 @@ function solve(groups, record, groupIndex, lut) {
       }
     }
     if (record[startIndex + groups[groupIndex]] == "#") {
-      //console.log("b", startIndex);
       valid = false;
     }
 
     if (valid) {
-      //console.log(valid, startIndex, groupIndex);
       sum +=
         groupIndex == groups.length - 1
           ? 1
@@ -91,15 +85,13 @@ function solve(groups, record, groupIndex, lut) {
 
 const part1 = (rawInput) => {
   const input = parseInput(rawInput);
-  console.log(input.map((x) => solve(x.groups, x.record, 0, new Map())));
   return input.map((x) => solve(x.groups, x.record, 0, new Map())).sum();
 };
 
 const part2 = (rawInput) => {
   const input = parseInput(rawInput, true);
   return input
-    .map((x, i) => {
-      console.log(i);
+    .map((x) => {
       return solve(x.groups, x.record, 0, new Map());
     })
     .sum();
