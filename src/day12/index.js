@@ -1,5 +1,4 @@
 import run from "aocrunner";
-import { count, group } from "console";
 
 Array.prototype.sum = function sum() {
   return this.reduce((a, b) => a + b);
@@ -7,7 +6,7 @@ Array.prototype.sum = function sum() {
 
 const unfoldStr = (str, char) => (str + char).repeat(4) + str;
 
-const parseRecord = (line) => line.match(/[#\?\.]+/)[0];
+const parseRecord = (line) => line.match(/[#?.]+/)[0];
 
 const parseGroups = (line, unfold = false) => {
   let groupStr = line.match(/[\d,]+/)[0];
@@ -29,7 +28,7 @@ const parseInput = (rawInput, unfold = false) => {
 function getLut(str, groupIndex, lut) {
   return lut.get(str + groupIndex.toFixed());
 }
-const setLut = (str, groupIndex, lut, value) => {
+const setLut = (str, groupIndex, lut) => {
   lut.set(str + groupIndex.toFixed());
 };
 
