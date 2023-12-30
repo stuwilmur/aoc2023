@@ -18,10 +18,49 @@ const part1 = (rawInput) => {
   return hashed.reduce((a, b) => a + b);
 };
 
-const part2 = (rawInput) => {
-  const input = parseInput(rawInput);
+function initBoxes() {
+  let boxes = [];
+  for (let boxIndex = 0; boxIndex < 256; boxIndex++) {
+    boxes.push(new Map());
+  }
+  return boxes;
+}
 
-  return;
+function parseRawCommand(rawCommand) {
+  const re = /([a-z]+)([=-])(\d?)/gi;
+  let [lens, op, power] = re.exec(rawCommand).slice(1);
+  return { lens: lens, op: op, power: power };
+}
+
+function doCommand(rawCommand, boxes) {
+  const command = parseRawCommand(rawCommand);
+  const boxIndex = hash(command.lens);
+  if (command.op == "-") {
+    boxes[boxIndex].delete(command.lens);
+  } else {
+    boxes[boxIndex].set(command.lens, command.power);
+  }
+}
+
+function calculateBoxLensPower(box, boxIndex) {
+  let total = 0;
+  let lensKeys = [...box.keys()];
+  lensKeys.forEach((lensKey, lensIndex) => {
+    total += (boxIndex + 1) * (lensIndex + 1) * box.get(lensKey);
+  });
+  return total;
+}
+
+const part2 = (rawInput) => {
+  const commands = parseInput(rawInput);
+  let boxes = initBoxes();
+  commands.forEach((command) => {
+    doCommand(command, boxes);
+  });
+  let lensPowers = boxes.map((box, boxIndex) =>
+    calculateBoxLensPower(box, boxIndex),
+  );
+  return lensPowers.reduce((a, b) => a + b);
 };
 
 run({
@@ -36,10 +75,10 @@ run({
   },
   part2: {
     tests: [
-      // {
-      //   input: ``,
-      //   expected: "",
-      // },
+      {
+        input: `rn=1,cm-,qp=3,cm=2,qp-,pc=4,ot=9,ab=5,pc-,pc=6,ot=7`,
+        expected: 145,
+      },
     ],
     solution: part2,
   },
