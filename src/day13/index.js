@@ -1,5 +1,4 @@
 import run from "aocrunner";
-import { count } from "console";
 
 const sum = (arr) => (arr.length > 0 ? arr.reduce((a, b) => a + b) : 0);
 
@@ -102,7 +101,6 @@ const part2 = (rawInput) => {
           (!arrayCmp(reflections[0], smudgedReflections[0]) ||
             !arrayCmp(reflections[1], smudgedReflections[1]))
         ) {
-          console.log(newPattern + "\n");
           if (!arrayCmp(reflections[0], smudgedReflections[0])) {
             let newr = reflections[0].filter(
               (e) => !smudgedReflections[0].includes(e),
@@ -114,7 +112,6 @@ const part2 = (rawInput) => {
             );
             total += newr[0];
           }
-          //total += allReflections(newPattern) - allReflections(pattern);
           break;
         }
       }
