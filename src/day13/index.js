@@ -1,4 +1,5 @@
 import run from "aocrunner";
+import { count } from "console";
 
 const sum = (arr) => (arr.length > 0 ? arr.reduce((a, b) => a + b) : 0);
 
@@ -51,23 +52,75 @@ function countReflections(list) {
 
 const parseInput = (rawInput) => rawInput.split(/\n\n/);
 
+function allReflections(rawInput) {
+  let [rowReflections, colReflections] = getReflections(rawInput);
+  return sum(rowReflections) * 100 + sum(colReflections);
+}
+
+function getReflections(rawInput) {
+  let input = rawInput.split("\n");
+  let hashedRows = input.map((x) => x.hashCode());
+  let hashedColumns = transpose(input).map((x) => x.hashCode());
+  const rowReflections = countReflections(hashedRows);
+  const colReflections = countReflections(hashedColumns);
+  return [rowReflections, colReflections];
+}
+
 const part1 = (rawInputs) => {
   const inputs = parseInput(rawInputs);
   let total = 0;
   inputs.forEach((rawInput) => {
-    let input = rawInput.split("\n");
-    let hashedRows = input.map((x) => x.hashCode());
-    let hashedColumns = transpose(input).map((x) => x.hashCode());
-    const rowReflections = countReflections(hashedRows);
-    const colReflections = countReflections(hashedColumns);
-    total += sum(rowReflections) * 100 + sum(colReflections);
+    total += allReflections(rawInput);
   });
   return total;
 };
 
+function replaceChar(str, charIndex, char) {
+  let left = str.slice(0, charIndex);
+  let right = str.slice(charIndex + 1);
+  let result = left + char + right;
+  return result;
+}
+
+function arrayCmp(arr1, arr2) {
+  return arr1.every((e, i) => e == arr2[i]);
+}
+
 const part2 = (rawInput) => {
-  const input = parseInput(rawInput);
-  return;
+  const inputs = parseInput(rawInput);
+  let total = 0;
+  inputs.forEach((pattern) => {
+    let smudgedReflections = getReflections(pattern);
+    for (let charIndex = 0; charIndex < pattern.length; charIndex++) {
+      if (pattern[charIndex] == "#" || pattern[charIndex] == ".") {
+        let newChar = pattern[charIndex] == "#" ? "." : "#";
+        let newPattern = replaceChar(pattern, charIndex, newChar);
+
+        let reflections = getReflections(newPattern);
+        if (
+          (reflections[0].length > 0 || reflections[1].length > 0) &&
+          (!arrayCmp(reflections[0], smudgedReflections[0]) ||
+            !arrayCmp(reflections[1], smudgedReflections[1]))
+        ) {
+          console.log(newPattern + "\n");
+          if (!arrayCmp(reflections[0], smudgedReflections[0])) {
+            let newr = reflections[0].filter(
+              (e) => !smudgedReflections[0].includes(e),
+            );
+            total += 100 * newr[0];
+          } else {
+            let newr = reflections[1].filter(
+              (e) => !smudgedReflections[1].includes(e),
+            );
+            total += newr[0];
+          }
+          //total += allReflections(newPattern) - allReflections(pattern);
+          break;
+        }
+      }
+    }
+  });
+  return total;
 };
 
 run({
@@ -96,10 +149,24 @@ run({
   },
   part2: {
     tests: [
-      //{
-      //  input: ``,
-      //  expected: "",
-      //},
+      {
+        input: `#.##..##.
+..#.##.#.
+##......#
+##......#
+..#.##.#.
+..##..##.
+#.#.##.#.
+
+#...##..#
+#....#..#
+..##..###
+#####.##.
+#####.##.
+..##..###
+#....#..#`,
+        expected: 400,
+      },
     ],
     solution: part2,
   },
