@@ -27,7 +27,6 @@ const part1 = (rawInput) => {
 
 const part2 = (rawInput) => {
   const [time, distance] = parseInput2(rawInput);
-  s;
   return ways(time, distance);
 };
 

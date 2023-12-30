@@ -25,10 +25,6 @@ String.prototype.hashCode = function () {
   return hash;
 };
 
-function hashArray(arr) {
-  return arr.map((str) => str.hashCode());
-}
-
 function arrayReflection(a, b) {
   return a.every((e, i) => e == b[b.length - 1 - i]);
 }
@@ -36,7 +32,6 @@ function arrayReflection(a, b) {
 function countReflections(list) {
   let reflections = [];
   let l = list.length;
-  let sum = 0;
   for (let n = 1; n <= l - 1; n++) {
     let a = n <= l / 2 ? 0 : 2 * n - l;
     let z = n <= l / 2 ? 2 * n : l;

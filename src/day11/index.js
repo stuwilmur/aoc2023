@@ -86,8 +86,6 @@ const part2 = (rawInput) => {
     expand(getGalaxyPositions(lines), rows, columns, 1e6 - 1),
     distance,
   ).reduce((a, b) => a + b);
-
-  return;
 };
 
 run({

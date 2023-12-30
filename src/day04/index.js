@@ -1,5 +1,4 @@
 import run from "aocrunner";
-import { count, table } from "console";
 
 const parseInput = (rawInput) => rawInput.split("\n");
 

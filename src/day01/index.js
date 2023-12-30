@@ -5,17 +5,18 @@ const parseInput = (rawInput) => rawInput;
 const part1 = (rawInput) => {
   const input = parseInput(rawInput);
   let f = parseInt;
-  let t = input.split('\n').map((d) => d.match(/\d/g))
-  let u = t.map((d) => [f(d[0]), f(d[d.length - 1])])
-  let v = u.map(d => d.reduce((a, b) => 10 * a + b))
-  let w = v.reduce((a, b) => a + b)
+  let t = input.split("\n").map((d) => d.match(/\d/g));
+  let u = t.map((d) => [f(d[0]), f(d[d.length - 1])]);
+  let v = u.map((d) => d.reduce((a, b) => 10 * a + b));
+  let w = v.reduce((a, b) => a + b);
   return w;
 };
 
 function match(str) {
-  let re = /\d|one|two|three|four|five|six|seven|eight|nine/gi
-  let m, res = [];
-  while (m = re.exec(str)) {
+  let re = /\d|one|two|three|four|five|six|seven|eight|nine/gi;
+  let m,
+    res = [];
+  while ((m = re.exec(str))) {
     res.push(m[0]);
     re.lastIndex = m.index + 1;
   }
@@ -33,14 +34,14 @@ const part2 = (rawInput) => {
     six: 6,
     seven: 7,
     eight: 8,
-    nine: 9
-  }
-  let f = (d) => isNaN(parseInt(d)) ? n[d] : parseInt(d);
-  let t = input.split('\n').map(match)
-  let u = t.map((d) => [f(d[0])*10, f(d[d.length - 1])])
-  let sum = (a, b) => a + b
-  let v = u.map(d => d.reduce(sum))
-  let w = v.reduce(sum)
+    nine: 9,
+  };
+  let f = (d) => (isNaN(parseInt(d)) ? n[d] : parseInt(d));
+  let t = input.split("\n").map(match);
+  let u = t.map((d) => [f(d[0]) * 10, f(d[d.length - 1])]);
+  let sum = (a, b) => a + b;
+  let v = u.map((d) => d.reduce(sum));
+  let w = v.reduce(sum);
   return w;
 };
 

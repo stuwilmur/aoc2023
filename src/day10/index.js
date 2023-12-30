@@ -1,5 +1,4 @@
 import run from "aocrunner";
-import { start } from "repl";
 
 const parseInput = (rawInput) => rawInput.split("\n");
 
