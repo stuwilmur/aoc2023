@@ -73,7 +73,6 @@ const part2 = (rawInput) => {
   let res = [];
   for (let i = 1; i < 1000; i++) {
     n = cycle(n);
-    console.log(n.join("\n"));
     res.push(load(n));
   }
   let period;
@@ -87,10 +86,7 @@ const part2 = (rawInput) => {
       break;
     }
   }
-  console.log(period);
-  console.log(res.slice(900));
-  console.log((1000000000 + 100) % period);
-  return res[900 + ((1000000000 + 100) % period)];
+  return res[900 - 1 + ((1000000000 - 900) % period)];
 };
 
 run({
@@ -131,5 +127,5 @@ O.#..O.#.#
     solution: part2,
   },
   trimTestInputs: true,
-  onlyTests: true,
+  onlyTests: false,
 });
