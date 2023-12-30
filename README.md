@@ -11,9 +11,9 @@
 
 <!--SOLUTIONS-->
 
-[![Day](https://badgen.net/badge/01/%E2%98%85%E2%98%85/green)](src/day01)
-[![Day](https://badgen.net/badge/02/%E2%98%85%E2%98%85/green)](src/day02)
-[![Day](https://badgen.net/badge/03/%E2%98%85%E2%98%85/green)](src/day03)
+![Day](https://badgen.net/badge/01/%E2%98%86%E2%98%86/gray)
+![Day](https://badgen.net/badge/02/%E2%98%86%E2%98%86/gray)
+![Day](https://badgen.net/badge/03/%E2%98%86%E2%98%86/gray)
 [![Day](https://badgen.net/badge/04/%E2%98%85%E2%98%85/green)](src/day04)
 [![Day](https://badgen.net/badge/05/%E2%98%85%E2%98%86/yellow)](src/day05)
 [![Day](https://badgen.net/badge/06/%E2%98%85%E2%98%85/green)](src/day06)
@@ -22,7 +22,7 @@
 [![Day](https://badgen.net/badge/09/%E2%98%85%E2%98%85/green)](src/day09)
 [![Day](https://badgen.net/badge/10/%E2%98%85%E2%98%85/green)](src/day10)
 [![Day](https://badgen.net/badge/11/%E2%98%85%E2%98%85/green)](src/day11)
-[![Day](https://badgen.net/badge/12/%E2%98%85%E2%98%86/yellow)](src/day12)
+[![Day](https://badgen.net/badge/12/%E2%98%85%E2%98%85/green)](src/day12)
 [![Day](https://badgen.net/badge/13/%E2%98%85%E2%98%85/green)](src/day13)
 [![Day](https://badgen.net/badge/14/%E2%98%85%E2%98%86/yellow)](src/day14)
 ![Day](https://badgen.net/badge/15/%E2%98%86%E2%98%86/gray)
@@ -146,23 +146,23 @@ Both parts: 57.086ms
 
 ```
 Day 12
-Time part 1: 73.898ms
-Time part 2: -
-Both parts: 73.898ms
+Time part 1: 59.175ms
+Time part 2: 2436.994ms
+Both parts: 2496.17ms
 ```
 
 ```
 Day 13
-Time part 1: 10.475ms
-Time part 2: 319.152ms
-Both parts: 329.627ms
+Time part 1: 6.028ms
+Time part 2: 133.413ms
+Both parts: 139.44ms
 ```
 
 ```
 Day 14
-Time part 1: 3.887ms
+Time part 1: 3.583ms
 Time part 2: -
-Both parts: 3.887ms
+Both parts: 3.583ms
 ```
 
 ```
@@ -243,8 +243,8 @@ Both parts: -
 ```
 
 ```
-Total stars: 19/50
-Total time: 16109.902ms
+Total stars: 20/50
+Total time: 18341.683ms
 ```
 
 <!--/RESULTS-->

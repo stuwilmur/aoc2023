@@ -28,8 +28,8 @@ const parseInput = (rawInput, unfold = false) => {
 function getLut(str, groupIndex, lut) {
   return lut.get(str + groupIndex.toFixed());
 }
-const setLut = (str, groupIndex, lut) => {
-  lut.set(str + groupIndex.toFixed());
+const setLut = (str, groupIndex, lut, sum) => {
+  lut.set(str + groupIndex.toFixed(), sum);
 };
 
 function solve(groups, record, groupIndex, lut) {
@@ -151,5 +151,5 @@ run({
     solution: part2,
   },
   trimTestInputs: true,
-  onlyTests: true,
+  onlyTests: false,
 });
