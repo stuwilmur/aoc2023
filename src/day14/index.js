@@ -73,6 +73,7 @@ const part2 = (rawInput) => {
   let res = [];
   for (let i = 1; i < 1000; i++) {
     n = cycle(n);
+    console.log(n.join("\n"));
     res.push(load(n));
   }
   let period;
@@ -130,5 +131,5 @@ O.#..O.#.#
     solution: part2,
   },
   trimTestInputs: true,
-  onlyTests: false,
+  onlyTests: true,
 });
